@@ -49,15 +49,13 @@ def link(target: str, link: str, force: bool) -> None:
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
+    parser = argparse.ArgumentParser()
 
     parser.add_argument(
+        '-f',
         '--force',
         action='store_true',
-        default=False,
-        help='If symlink already exists, remove it and create again'
+        help='If symlink or file already exists, remove it and create symlink'
     )
 
     return parser.parse_args()

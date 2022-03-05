@@ -3,6 +3,10 @@
 	email = jacobkosmaty@gmail.com
 [core]
 	editor = code --wait
+[diff]
+    tool = default-difftool
+[difftool "default-difftool"]
+    cmd = code --wait --diff $LOCAL $REMOTE
 [alias]
 	git = !git
 	st = status
