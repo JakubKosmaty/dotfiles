@@ -36,6 +36,7 @@ Set-Alias c clear
 Set-Alias g git
 Set-Alias k kubectl
 Set-Alias v vagrant
+
 function l {
   Get-ChildItem -Force @args
 }

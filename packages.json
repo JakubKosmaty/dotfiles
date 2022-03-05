@@ -1,0 +1,11 @@
+{
+    "powershell": [
+        "oh-my-posh"
+    ],
+    "choco": [
+        "vscode"
+    ],
+    "apt": [
+        "vscode"
+    ]
+}
