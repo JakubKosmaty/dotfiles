@@ -1,5 +1,6 @@
 [user]
 	name = Jakub Kosmaty
+	email = jacobkosmaty@gmail.com
 [core]
 	editor = code --wait
 [alias]
