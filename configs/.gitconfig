@@ -1,0 +1,8 @@
+[user]
+	name = Jakub Kosmaty
+[core]
+	editor = code --wait
+[alias]
+	git = !git
+	st = status
+	comit = commit

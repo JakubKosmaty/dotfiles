@@ -26,6 +26,7 @@ $env:KUBE_EDITOR = "code -w"
 $env:PATH += ";C:\Users\Jakub\Documents\JetBrainsScripts"
 $env:JAVA_HOME = "C:\Users\Jakub\.jdks\temurin-11.0.13"
 $env:PATH += ";$env:JAVA_HOME\bin"
+$env:PYTHONIOENCODING="utf-8"
 
 # Node.js version manager
 fnm env --use-on-cd | Out-String | Invoke-Expression
@@ -34,6 +35,7 @@ fnm env --use-on-cd | Out-String | Invoke-Expression
 Set-Alias c clear
 Set-Alias g git
 Set-Alias k kubectl
+Set-Alias v vagrant
 function l {
   Get-ChildItem -Force @args
 }
