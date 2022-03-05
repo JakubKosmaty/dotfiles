@@ -1,14 +1,13 @@
 [user]
-	name = Jakub Kosmaty
-	email = jacobkosmaty@gmail.com
+  name = Jakub Kosmaty
+  email = jacobkosmaty@gmail.com
 [core]
-	editor = code --wait
+  editor = code --wait
 [diff]
-	tool = default-difftool
+  tool = default-difftool
 [difftool "default-difftool"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+  cmd = code --wait --diff $LOCAL $REMOTE
 [alias]
-	git = !git
-	st = status
-	comit = commit
-    
+  git = !git
+  st = status
+  comit = commit
