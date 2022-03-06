@@ -1,6 +1,9 @@
 # oh-my-posh
-Import-Module oh-my-posh
-Set-PoshPrompt -Theme pure
+# Import-Module oh-my-posh
+# Set-PoshPrompt -Theme pure
+
+# starship
+Invoke-Expression (&starship init powershell)
 
 # Terminal-Icons
 Import-Module -Name Terminal-Icons

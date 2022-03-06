@@ -1,0 +1,10 @@
+{
+    "Windows": {
+        "dotfiles/Microsoft.PowerShell_profile.ps1": "~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1"
+    },
+    "Linux": {},
+    "Shared": {
+        "dotfiles/.gitconfig": "~/.gitconfig",
+        "dotfiles/starship.toml": "~/.config/starship.toml"
+    }
+}

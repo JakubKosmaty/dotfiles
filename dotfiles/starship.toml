@@ -1,0 +1,19 @@
+add_newline = false
+
+[directory]
+truncate_to_repo = false
+
+[username]
+show_always = true
+format = "[$user]($style) "
+
+[git_branch]
+symbol = " "
+format = "[$symbol$branch]($style) "
+
+[git_commit]
+tag_disabled = false
+
+[python]
+symbol = " "
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
