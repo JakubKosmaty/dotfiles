@@ -9,6 +9,7 @@ format = "[$user]($style) "
 
 [git_branch]
 symbol = " "
+style = 'green'
 format = "[$symbol$branch]($style) "
 
 [git_commit]
@@ -17,3 +18,8 @@ tag_disabled = false
 [python]
 symbol = " "
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[kubernetes]
+disabled = false
+style = 'bold purple'
+format = '[$context( \($namespace\))]($style) in '
