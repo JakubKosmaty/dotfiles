@@ -5,7 +5,8 @@
     "Linux": {
         "dotfiles/.zshrc": "~/.zshrc",
         "dotfiles/.tmux.conf": "~/.tmux.conf",
-        "dotfiles/sway/config": "~/.config/sway/config"
+        "dotfiles/sway/config": "~/.config/sway/config",
+        "dotfiles/waybar/config": "~/.config/waybar/config"
     },
     "Shared": {
         "dotfiles/.alacritty.yml": "~/.alacritty.yml",
