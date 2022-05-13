@@ -20,17 +20,17 @@ def extract_mapping(os: str) -> dict[str, str]:
         return {**data[os], **data['Shared']}
 
 
-def link(target: str, link: str, force: bool) -> int:
-    target_path = Path(target).resolve()
-    if not target_path.is_file():
+def link(file: str, link: str, force: bool) -> int:
+    file_path = Path(file).resolve()
+    if not file_path.is_file():
         print(
-            f'Could not link(Reason: {target} does not exists):'
-            f'{link} -> {target}',
+            f'Could not link(Reason: {file_path} file does not exists):'
+            f'{link} -> {file}',
         )
         return 1
 
     link_path = Path(link).expanduser()
-    if link_path.exists():
+    if link_path.exists() or link_path.is_symlink():
         if not force:
             print(f'Link already exists(Use flag -f): {link_path}')
             return 1
@@ -41,10 +41,11 @@ def link(target: str, link: str, force: bool) -> int:
     parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        link_path.symlink_to(target_path)
-        print(f'Successfully created symlink: {link_path} --> {target_path}')
+        link_path.symlink_to(file_path)
+        print(f'Successfully created symlink: {link_path} -> {file_path}')
     except OSError as err:
         print(f'Internal OS Error: {err}')
+        return 1
 
     return 0
 
