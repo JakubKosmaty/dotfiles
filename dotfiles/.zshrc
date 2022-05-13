@@ -31,3 +31,6 @@ alias grep='grep --color=auto'
 alias g='git'
 
 alias mc='/home/jakub/Documents/java8/amazon-corretto-8.332.08.1-linux-x64/bin/java -jar /home/jakub/Documents/java8/sklauncher.jar'
+
+alias clip='xclip -selection clipboard'
+alias clipi='xclip -selection clipboard -i'
