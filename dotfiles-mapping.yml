@@ -1,0 +1,31 @@
+force_creation: True
+links:
+
+  - file: dotfiles/.alacritty.yml
+    link_to: ~/.alacritty.yml
+
+  - file: dotfiles/.gitconfig
+    link_to: ~/.gitconfig
+
+  - file: dotfiles/starship.toml
+    link_to: ~/.config/starship.toml
+
+  - file: dotfiles/Microsoft.PowerShell_profile.ps1
+    link_to: ~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+    os: Windows
+
+  - file: dotfiles/.zshrc
+    link_to: ~/.zshrc
+    os: Linux
+
+  - file: dotfiles/.tmux.conf
+    link_to: ~/.tmux.conf
+    os: Linux
+
+  - file: dotfiles/sway/config
+    link_to: ~/.config/sway/config
+    os: Linux
+
+  - file: dotfiles/waybar/config
+    link_to: ~/.config/waybar/config
+    os: Linux

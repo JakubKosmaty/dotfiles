@@ -29,8 +29,38 @@ alias l='ls -al'
 alias c='clear'
 alias grep='grep --color=auto'
 alias g='git'
-
-alias mc='/home/jakub/Documents/java8/amazon-corretto-8.332.08.1-linux-x64/bin/java -jar /home/jakub/Documents/java8/sklauncher.jar'
+alias k='kubectl'
 
 alias clip='xclip -selection clipboard'
 alias clipi='xclip -selection clipboard -i'
+
+if [[ -f ~/.zshrc-tmp ]]; then
+    source ~/.zshrc-tmp
+fi
+
+function reload() {
+    source ~/.zshrc
+    echo 'Config reloaded'
+}
+
+# ansible autocompletion
+eval "$(register-python-argcomplete ansible)"
+eval "$(register-python-argcomplete ansible-playbook)"
+
+# >>>> Vagrant command completion (start)
+fpath=(/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/contrib/zsh $fpath)
+compinit
+# <<<<  Vagrant command completion (end)
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform
+
+export PATH=$PATH:/usr/local/go/bin
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

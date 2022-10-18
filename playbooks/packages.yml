@@ -4,20 +4,62 @@
   tasks:
     - name: Update and upgrade apt packages
       apt:
-        update_cache: yes
-        upgrade: yes
+        update_cache: true
+        upgrade: true
 
     - name: Install apt packages
       apt:
         name:
-          - git
           - curl
+          - wget
+          - git
           - zsh
           - alacritty
+          - unzip
         state: latest
 
-    # - name: Install Starship prompt
+- name: Setup terminal
+  hosts: localhost
+  become: true
+  tags: terminal
+  tasks:
+    - name: Install Oh My Zsh
+      shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-    - name: Install oh-my-zsh
-      shell: >
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    - name: Install Starship
+      shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
+
+    - name: Install Zsh completions
+      shell: |
+        zsh_completions_path=/home/jakub/.oh-my-zsh/completions/
+
+        kubectl completion zsh > ${zsh_completions_path}/_kubectl
+        helm completion zsh > ${zsh_completions_path}/_helm
+        argocd completion zsh > ${zsh_completions_path}/_argocd
+        k3sup completion zsh > ${zsh_completions_path}/_k3sup
+
+        vagrant autocomplete install --zsh
+        terraform -install-autocompletes
+      tags: completions
+
+
+- name: Install arkade and arkade CLIs
+  hosts: localhost
+  become: true
+  tags: arkade
+  vars:
+    arkade_clis:
+      - kubectl
+      - helm
+      - argocd
+      - k3sup
+      - vagrant
+      - terraform
+  tasks:
+    - name: Install arkade
+      shell: sh -c "$(curl -fsSL https://get.arkade.dev)"
+
+    - name: Install arkade CLIs
+      shell: arkade get --quiet {{ item }}
+      loop: "{{ arkade_clis }}"
+      tags: arkade-clis

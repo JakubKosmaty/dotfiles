@@ -1,13 +1,21 @@
 [user]
     name = Jakub Kosmaty
     email = jacobkosmaty@gmail.com
+
 [core]
     editor = code --wait
+
 [diff]
     tool = default-difftool
+
 [difftool "default-difftool"]
     cmd = code --wait --diff $LOCAL $REMOTE
+
 [alias]
     git = !git
     st = status
     comit = commit
+    pul = pull
+
+[includeIf "gitdir:~/Documents/work/"]
+    path = professional.gitconfig

@@ -1,76 +1,94 @@
 from __future__ import annotations
 
-import argparse
-import json
 import platform
+from enum import Enum
 from pathlib import Path
 
+import ruamel.yaml
+from pydantic import BaseModel
+from pydantic import validator
 
-def detect_os() -> str:
-    os = platform.system()
-    if os not in ['Windows', 'Linux']:
-        raise SystemExit(f'Unsupported OS(Allowed: Windows, Linux): {os}')
-    return os
+CONFIG_PATH = 'dotfiles-mapping.yml'
+USER_OS = platform.system()
 
-
-def extract_mapping(os: str) -> dict[str, str]:
-    with open('dotfiles-mapping.json') as f:
-        data = json.load(f)
-        # return data[os] | data['Shared']
-        return {**data[os], **data['Shared']}
+yaml = ruamel.yaml.YAML(typ='safe')
 
 
-def link(file: str, link: str, force: bool) -> int:
-    file_path = Path(file).resolve()
-    if not file_path.is_file():
-        print(
-            f'Could not link(Reason: {file_path} file does not exists):'
-            f'{link} -> {file}',
-        )
-        return 1
-
-    link_path = Path(link).expanduser()
-    if link_path.exists() or link_path.is_symlink():
-        if not force:
-            print(f'Link already exists(Use flag -f): {link_path}')
-            return 1
-
-        link_path.unlink()
-
-    parent = link_path.parent
-    parent.mkdir(parents=True, exist_ok=True)
-
-    try:
-        link_path.symlink_to(file_path)
-        print(f'Successfully created symlink: {link_path} -> {file_path}')
-    except OSError as err:
-        print(f'Internal OS Error: {err}')
-        return 1
-
-    return 0
+class OS(str,  Enum):
+    linux = 'Linux'
+    windows = 'Windows'
+    independent = 'Independent'
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+class Link(BaseModel):
+    file: Path
+    link_to: Path
+    os = OS.independent
 
-    parser.add_argument(
-        '-f',
-        '--force',
-        action='store_true',
-        help='If symlink or file already exists, remove it and create symlink',
-    )
+    @validator('file')
+    def check_if_exists_and_resolve_file(cls, v: Path) -> Path:
+        if not v.exists():
+            raise ValueError(f'File does not exists: {v}')
+        return v.resolve()
 
-    return parser.parse_args()
+    @validator('link_to')
+    def expand_link(cls, v: Path) -> Path:
+        return v.expanduser()
+
+    def create_symlink(self) -> None:
+        parent = self.link_to.parent
+        parent.mkdir(parents=True, exist_ok=True)
+
+        try:
+            self.link_to.symlink_to(self.file)
+            print(f'Link successfully created: {self}')
+        except OSError as err:
+            print(err)
+
+    def unlink(self) -> None:
+        self.link_to.unlink(missing_ok=True)
+
+    def is_for_user_os(self) -> bool:
+        os = self.os
+        return os == OS.independent or os == USER_OS
+
+    def is_exists(self) -> bool:
+        return self.link_to.exists() or self.link_to.is_symlink()
+
+    def __str__(self) -> str:
+        return f'{self.link_to} -> {self.file}'
+
+
+class Config(BaseModel):
+    force_creation: bool
+    links: list[Link]
+
+
+def parse_config() -> Config:
+    path = Path(CONFIG_PATH)
+    contents = yaml.load(path)
+    to_dict = dict(contents)
+    return Config.parse_obj(to_dict)
+
+
+def create_symlinks(config: Config) -> None:
+    force = config.force_creation
+    for link in config.links:
+        if not link.is_for_user_os():
+            continue
+
+        if not force and link.is_exists():
+            print(f'Link or file already exists: {link.link_to}')
+            continue
+
+        link.unlink()
+        link.create_symlink()
 
 
 def main() -> int:
-    args = parse_args()
-    force: bool = args.force
-
-    os = detect_os()
-    mapping = extract_mapping(os)
-
-    return any(link(k, v, force) for k, v in mapping.items())
+    config = parse_config()
+    create_symlinks(config)
+    return 0
 
 
 if __name__ == '__main__':

@@ -1,22 +1,26 @@
 # https://github.com/alacritty/alacritty
 env:
   TERM: xterm-256color
+
 shell:
   program: /bin/zsh
   args:
     - --login
     - -c
     - "tmux"
+
 window:
   startup_mode: Maximized
   padding:
     x: 10
+
 font:
   normal:
     family: JetBrainsMono NF
   size: 11.0
   offset:
     y: 1
+
 # https://github.com/arcticicestudio/nord-alacritty
 colors:
   primary:
@@ -66,3 +70,8 @@ colors:
     magenta: '#8c738c'
     cyan: '#6d96a5'
     white: '#aeb3bb'
+
+# key_bindings:
+  # - key: N
+    # mods: Option
+    # action: SpawnNewInstance
