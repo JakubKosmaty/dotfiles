@@ -44,8 +44,8 @@ function reload() {
 }
 
 # ansible autocompletion
-eval "$(register-python-argcomplete ansible)"
-eval "$(register-python-argcomplete ansible-playbook)"
+# eval "$(register-python-argcomplete ansible)"
+# eval "$(register-python-argcomplete ansible-playbook)"
 
 # >>>> Vagrant command completion (start)
 fpath=(/opt/vagrant/embedded/gems/2.2.19/gems/vagrant-2.2.19/contrib/zsh $fpath)

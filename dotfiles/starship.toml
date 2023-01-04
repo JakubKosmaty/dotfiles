@@ -1,4 +1,20 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+right_format = """$kubernetes"""
+
 add_newline = false
+
+[battery]
+disabled = true
+
+[character]
+success_symbol = "[](green)"
+error_symbol = "[](red)"
+
+[package]
+symbol = "📦 "
+format = "[$symbol$version]($style) "
+
 
 [directory]
 truncate_to_repo = false
@@ -10,16 +26,17 @@ format = "[$user]($style) "
 [git_branch]
 symbol = " "
 style = 'green'
-format = "[$symbol$branch]($style) "
+format = "[$symbol$branch(->$remote_branch)]($style) "
 
 [git_commit]
 tag_disabled = false
 
 [python]
 symbol = " "
-format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+format = '[${symbol}${pyenv_prefix}(${version}) (\($virtualenv\) )]($style)'
 
 [kubernetes]
 disabled = false
-style = 'bold purple'
-format = '[$context( \($namespace\))]($style) in '
+style = 'blue bold'
+symbol = " "
+format = '[$symbol$context( \($namespace\))]($style)'

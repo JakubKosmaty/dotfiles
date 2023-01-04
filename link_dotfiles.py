@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import platform
 from enum import Enum
 from pathlib import Path
@@ -35,7 +36,7 @@ class Link(BaseModel):
     def expand_link(cls, v: Path) -> Path:
         return v.expanduser()
 
-    def create_symlink(self) -> None:
+    def symlink(self) -> None:
         parent = self.link_to.parent
         parent.mkdir(parents=True, exist_ok=True)
 
@@ -43,7 +44,7 @@ class Link(BaseModel):
             self.link_to.symlink_to(self.file)
             print(f'Link successfully created: {self}')
         except OSError as err:
-            print(err)
+            print(f'Could not create symlink ({self}): {err}')
 
     def unlink(self) -> None:
         self.link_to.unlink(missing_ok=True)
@@ -64,8 +65,8 @@ class Config(BaseModel):
     links: list[Link]
 
 
-def parse_config() -> Config:
-    path = Path(CONFIG_PATH)
+def parse_config(config: str) -> Config:
+    path = Path(config)
     contents = yaml.load(path)
     to_dict = dict(contents)
     return Config.parse_obj(to_dict)
@@ -82,11 +83,23 @@ def create_symlinks(config: Config) -> None:
             continue
 
         link.unlink()
-        link.create_symlink()
+        link.symlink()
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--config',
+        default=CONFIG_PATH,
+        help='Path to config file',
+    )
+    return parser.parse_args()
 
 
 def main() -> int:
-    config = parse_config()
+    args = parse_args()
+    config_path: str = args.config
+    config = parse_config(config_path)
     create_symlinks(config)
     return 0
 

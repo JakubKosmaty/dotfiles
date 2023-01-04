@@ -63,3 +63,14 @@
       shell: arkade get --quiet {{ item }}
       loop: "{{ arkade_clis }}"
       tags: arkade-clis
+
+- name: Link dotfiles
+  hosts: localhost
+  # become: true
+  # become_user: jakub
+  tags: link-dotfiles
+  tasks:
+    - name: Run link_dotfiles.py
+      script: ../link_dotfiles.py
+      args:
+        executable: python3
