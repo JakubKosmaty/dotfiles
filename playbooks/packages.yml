@@ -2,6 +2,7 @@
   hosts: localhost
   become: true
   tasks:
+
     - name: Update and upgrade apt packages
       apt:
         update_cache: true
@@ -13,64 +14,107 @@
           - curl
           - wget
           - git
-          - zsh
-          - alacritty
           - unzip
         state: latest
 
-- name: Setup terminal
+- name: Setup Zsh, Oh My Zsh & Starship
   hosts: localhost
-  become: true
-  tags: terminal
-  tasks:
-    - name: Install Oh My Zsh
-      shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-    - name: Install Starship
-      shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
-
-    - name: Install Zsh completions
-      shell: |
-        zsh_completions_path=/home/jakub/.oh-my-zsh/completions/
-
-        kubectl completion zsh > ${zsh_completions_path}/_kubectl
-        helm completion zsh > ${zsh_completions_path}/_helm
-        argocd completion zsh > ${zsh_completions_path}/_argocd
-        k3sup completion zsh > ${zsh_completions_path}/_k3sup
-
-        vagrant autocomplete install --zsh
-        terraform -install-autocompletes
-      tags: completions
-
-
-- name: Install arkade and arkade CLIs
-  hosts: localhost
-  become: true
-  tags: arkade
   vars:
-    arkade_clis:
-      - kubectl
-      - helm
-      - argocd
-      - k3sup
-      - vagrant
-      - terraform
+    plugins:
+      - name: zsh-syntax-highlighting
+        url: https://github.com/zsh-users/zsh-syntax-highlighting
+      - name: zsh-autosuggestions
+        url: https://github.com/zsh-users/zsh-autosuggestions
+      - name: zsh-fzf-history-search
+        url: https://github.com/joshskidmore/zsh-fzf-history-search
   tasks:
-    - name: Install arkade
-      shell: sh -c "$(curl -fsSL https://get.arkade.dev)"
+    - name: Install zsh, zoxide and fzf
+      become: true
+      ansible.builtin.apt:
+        name:
+          - zsh
+          - zoxide
+          - fzf
+        state: latest
 
-    - name: Install arkade CLIs
-      shell: arkade get --quiet {{ item }}
-      loop: "{{ arkade_clis }}"
-      tags: arkade-clis
-
-- name: Link dotfiles
-  hosts: localhost
-  # become: true
-  # become_user: jakub
-  tags: link-dotfiles
-  tasks:
-    - name: Run link_dotfiles.py
-      script: ../link_dotfiles.py
+    - name: Install Oh My Zsh
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -- --unattended
       args:
-        executable: python3
+        creates: ~/.oh-my-zsh
+
+    - name: Set default shell to Zsh for {{ ansible_env.USER }}
+      become: true
+      ansible.builtin.shell: usermod --shell $(which zsh) {{ ansible_env.USER }}
+      register: usermod_result
+      changed_when: '"no changes" not in usermod_result.stdout'
+
+    - name: Install plugins
+      ansible.builtin.git:
+        repo: "{{ item.url }}"
+        dest: ~/.oh-my-zsh/custom/plugins/{{ item.name }}
+        depth: 1
+      loop: "{{ plugins }}"
+  
+    - name: Install Starship
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
+
+- name: Setup Alacritty
+  hosts: localhost
+  tasks:
+    - name: Add alacritty repository
+      ansible.builtin.apt_repository:
+        repo: 'ppa:aslatter/ppa'
+        state: present
+        update_cache: true
+
+    - name: Install Alacritty & tmux
+      ansible.builtin.apt:
+        name: 
+          - alacritty
+          - tmux
+        state: latest
+
+    - name: Clone Nerd Fonts
+      become: true
+      ansible.builtin.git:
+        repo: 'https://github.com/ryanoasis/nerd-fonts.git'
+        dest: /usr/local/src/nerd-fonts
+        depth: 1
+
+    - name: Install JetBrains Mono
+      ansible.builtin.command: /usr/local/src/nerd-fonts/install.sh JetBrainsMono
+
+    # - name: Install Zsh completions
+    #   shell: |
+    #     zsh_completions_path=/home/jakub/.oh-my-zsh/completions/
+
+    #     kubectl completion zsh > ${zsh_completions_path}/_kubectl
+    #     helm completion zsh > ${zsh_completions_path}/_helm
+    #     argocd completion zsh > ${zsh_completions_path}/_argocd
+    #     k3sup completion zsh > ${zsh_completions_path}/_k3sup
+
+    #     vagrant autocomplete install --zsh
+    #     terraform -install-autocompletes
+    #   tags: completions
+
+
+# - name: Install arkade and arkade CLIs
+#   hosts: localhost
+#   become: true
+#   tags: arkade
+#   vars:
+#     arkade_clis:
+#       - kubectl
+#       - helm
+#       - argocd
+#       - k3sup
+#       - vagrant
+#       - terraform
+#   tasks:
+#     - name: Install arkade
+#       shell: sh -c "$(curl -fsSL https://get.arkade.dev)"
+
+#     - name: Install arkade CLIs
+#       shell: arkade get --quiet {{ item }}
+#       loop: "{{ arkade_clis }}"
+#       tags: arkade-clis
