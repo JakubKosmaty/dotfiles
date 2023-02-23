@@ -4,12 +4,12 @@
   tasks:
 
     - name: Update and upgrade apt packages
-      apt:
+      ansible.builtin.apt:
         update_cache: true
         upgrade: true
 
     - name: Install apt packages
-      apt:
+      ansible.builtin.apt:
         name:
           - curl
           - wget
@@ -54,7 +54,7 @@
         dest: ~/.oh-my-zsh/custom/plugins/{{ item.name }}
         depth: 1
       loop: "{{ plugins }}"
-  
+
     - name: Install Starship
       ansible.builtin.shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
 
@@ -69,7 +69,7 @@
 
     - name: Install Alacritty & tmux
       ansible.builtin.apt:
-        name: 
+        name:
           - alacritty
           - tmux
         state: latest

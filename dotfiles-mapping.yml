@@ -1,31 +1,39 @@
 force_creation: True
 links:
 
-  - file: dotfiles/.alacritty.yml
-    link_to: ~/.alacritty.yml
+  - from: ~/.alacritty.yml
+    to: dotfiles/.alacritty.yml
 
-  - file: dotfiles/.gitconfig
-    link_to: ~/.gitconfig
+  - from: ~/.gitconfig
+    to: dotfiles/.gitconfig
 
-  - file: dotfiles/starship.toml
-    link_to: ~/.config/starship.toml
+  - from: ~/.config/starship.toml
+    to: dotfiles/starship.toml
 
-  - file: dotfiles/Microsoft.PowerShell_profile.ps1
-    link_to: ~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+  - from: ~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
+    to: dotfiles/Microsoft.PowerShell_profile.ps1
     os: Windows
 
-  - file: dotfiles/.zshrc
-    link_to: ~/.zshrc
+  - from: ~/.zshrc
+    to: dotfiles/.zshrc
     os: Linux
 
-  - file: dotfiles/.tmux.conf
-    link_to: ~/.tmux.conf
+  - from: ~/.tmux.conf
+    to: dotfiles/.tmux.conf
     os: Linux
 
-  - file: dotfiles/sway/config
-    link_to: ~/.config/sway/config
+  - from: ~/.config/sway/
+    to: dotfiles/sway/
     os: Linux
 
-  - file: dotfiles/waybar/config
-    link_to: ~/.config/waybar/config
+  - from: ~/.config/waybar/
+    to: dotfiles/waybar/
+    os: Linux
+
+  - from: ~/.config/hypr/
+    to: dotfiles/hypr/
+    os: Linux
+
+  - from: ~/.config/qtile/
+    to: dotfiles/qtile/
     os: Linux
