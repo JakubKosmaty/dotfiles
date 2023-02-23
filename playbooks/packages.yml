@@ -27,6 +27,8 @@
         url: https://github.com/zsh-users/zsh-autosuggestions
       - name: zsh-fzf-history-search
         url: https://github.com/joshskidmore/zsh-fzf-history-search
+      - name: zsh-completions
+        url: https://github.com/zsh-users/zsh-completions
   tasks:
     - name: Install zsh, zoxide and fzf
       become: true
@@ -84,18 +86,20 @@
     - name: Install JetBrains Mono
       ansible.builtin.command: /usr/local/src/nerd-fonts/install.sh JetBrainsMono
 
-    # - name: Install Zsh completions
-    #   shell: |
-    #     zsh_completions_path=/home/jakub/.oh-my-zsh/completions/
+- name: Install packages from binary
+  hosts: localhost
+  tasks:
+    - name: Install kubectl
+      ansible.builtin.shell: |
+        curl -L  --output /tmp/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 
-    #     kubectl completion zsh > ${zsh_completions_path}/_kubectl
-    #     helm completion zsh > ${zsh_completions_path}/_helm
-    #     argocd completion zsh > ${zsh_completions_path}/_argocd
-    #     k3sup completion zsh > ${zsh_completions_path}/_k3sup
+    - name: Install Zsh completions
+      shell: |
+        zsh_completions_path=/home/{{ ansible_env.USER }}/.oh-my-zsh/completions
+        mkdir --parents $zsh_completions_path
+        kubectl completion zsh > ${zsh_completions_path}/_kubectl
 
-    #     vagrant autocomplete install --zsh
-    #     terraform -install-autocompletes
-    #   tags: completions
 
 
 # - name: Install arkade and arkade CLIs
