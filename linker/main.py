@@ -7,10 +7,10 @@ from pathlib import Path
 
 import ruamel.yaml
 from pydantic import BaseModel
-from pydantic import validator
 from pydantic import Field
+from pydantic import validator
 
-CONFIG_PATH = 'dotfiles-mapping.yml'
+CONFIG_PATH = 'mappings.yml'
 USER_OS = platform.system()
 
 yaml = ruamel.yaml.YAML(typ='safe')
@@ -87,7 +87,6 @@ def create_symlinks(config: Config) -> None:
         if not force and link.is_exists():
             print(f'Link or file already exists: {link.from_field}')
             continue
-
 
         link.unlink()
         link.symlink()

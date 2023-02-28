@@ -99,26 +99,3 @@
         zsh_completions_path=/home/{{ ansible_env.USER }}/.oh-my-zsh/completions
         mkdir --parents $zsh_completions_path
         kubectl completion zsh > ${zsh_completions_path}/_kubectl
-
-
-
-# - name: Install arkade and arkade CLIs
-#   hosts: localhost
-#   become: true
-#   tags: arkade
-#   vars:
-#     arkade_clis:
-#       - kubectl
-#       - helm
-#       - argocd
-#       - k3sup
-#       - vagrant
-#       - terraform
-#   tasks:
-#     - name: Install arkade
-#       shell: sh -c "$(curl -fsSL https://get.arkade.dev)"
-
-#     - name: Install arkade CLIs
-#       shell: arkade get --quiet {{ item }}
-#       loop: "{{ arkade_clis }}"
-#       tags: arkade-clis

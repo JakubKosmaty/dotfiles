@@ -1,9 +1,11 @@
 [tool.poetry]
-name = "dotfiles"
+name = "linker"
 version = "0.1.0"
 description = ""
 authors = ["Jakub Kosmaty <jacobkosmaty@gmail.com>"]
 readme = "README.md"
+packages = [{include = "linker"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -12,6 +14,14 @@ ruamel-yaml = "^0.17.21"
 ansible = "^7.1.0"
 
 
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.1"
+flake8 = "^6.0.0"
+pre-commit = "^3.1.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+linker = 'linker.main:main'
