@@ -72,10 +72,10 @@ keys = [
 ]
 
 groups = [
-    Group('1', spawn='code', label=''),
-    Group('2', spawn=['google-chrome'] * 2, label=''),
-    Group('3', spawn='alacritty', label=''),
-    Group('4', label=''),
+    Group('1', spawn='code'),
+    Group('2', spawn=['google-chrome'] * 2),
+    Group('3', spawn='alacritty'),
+    Group('4'),
 ]
 
 for i in groups:
@@ -103,25 +103,30 @@ for i in groups:
     )
 
 layouts = [
-    layout.Columns(
+    layout.Max(),
+    layout.Bsp(
         border_normal='#303F4C',
         border_focus='#3f4d64',
-        border_width=2,
         margin=8,
+        border_width=2,
         margin_on_single=0,
     ),
-    layout.Max(),
-    # Try more layouts by unleashing below layouts.
-    layout.Stack(num_stacks=2),
-    layout.Bsp(),
-    layout.Matrix(),
-    layout.MonadTall(),
-    layout.MonadWide(),
-    layout.RatioTile(),
-    layout.Tile(),
-    layout.TreeTab(),
-    layout.VerticalTile(),
-    layout.Zoomy(),
+    # layout.Columns(
+    #     border_normal='#303F4C',
+    #     border_focus='#3f4d64',
+    #     border_width=2,
+    #     margin=8,
+    #     margin_on_single=0,
+    # ),
+    # layout.Stack(num_stacks=2),
+    # layout.Matrix(),
+    # layout.MonadTall(),
+    # layout.MonadWide(),
+    # layout.RatioTile(),
+    # layout.Tile(),
+    # layout.TreeTab(),
+    # layout.VerticalTile(),
+    # layout.Zoomy(),
 ]
 
 widget_defaults = dict(
@@ -137,9 +142,8 @@ screens = [
         wallpaper_mode='fill',
         top=bar.Bar(
             [
-                widget.CurrentLayout(),
                 widget.GroupBox(
-                    fontsize=24,
+                    # fontsize=24,
                     # active="#0C8CE9",
                     this_current_screen_border='#0C8CE9',
                     # block_highlight_text_color="#0C8CE9",
@@ -147,13 +151,16 @@ screens = [
                 ),
                 widget.Prompt(),
                 widget.Spacer(),
+                widget.CurrentLayout(),
+                widget.Spacer(),
                 widget.KeyboardLayout(configured_keyboards=['pl']),
                 widget.Clock(format='%I:%M %p %a %Y-%m-%d'),
             ],
             32,
             background='#2C2C2C',
-            border_width=[0, 0, 2, 0],
-            border_color='#414141',
+            # margin=[0, 0, 8, 0],
+            border_width=[0, 14, 4, 14],
+            border_color=['#414141', '#2C2C2C', '#414141', '#2C2C2C'],
         ),
     ),
 ]
