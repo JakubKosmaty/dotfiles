@@ -1,105 +1,110 @@
-# - name: Install and update apt packages
-#   hosts: localhost
-#   become: true
-#   tasks:
+- name: Install and update packages
+  hosts: localhost
+  become: true
+  tasks:
 
-#     - name: Update and upgrade apt packages
-#       ansible.builtin.apt:
-#         update_cache: true
-#         upgrade: true
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: true
 
-#     - name: Install apt packages
-#       ansible.builtin.apt:
-#         name:
-#           - curl
-#           - wget
-#           - git
-#           - unzip
-#         state: latest
+    - name: Install apt packages
+      ansible.builtin.apt:
+        name:
+          - curl
+          - wget
+          - git
+          - unzip
+        state: latest
 
-# - name: Setup Zsh, Oh My Zsh & Starship
-#   hosts: localhost
-#   vars:
-#     plugins:
-#       - name: zsh-syntax-highlighting
-#         url: https://github.com/zsh-users/zsh-syntax-highlighting
-#       - name: zsh-autosuggestions
-#         url: https://github.com/zsh-users/zsh-autosuggestions
-#       - name: zsh-fzf-history-search
-#         url: https://github.com/joshskidmore/zsh-fzf-history-search
-#       - name: zsh-completions
-#         url: https://github.com/zsh-users/zsh-completions
-#   tasks:
-#     - name: Install zsh, zoxide and fzf
-#       become: true
-#       ansible.builtin.apt:
-#         name:
-#           - zsh
-#           - zoxide
-#           - fzf
-#         state: latest
+    # - name: Install snap packages
+    #   community.general.snap:
+    #     name:
+    #       - redis
 
-#     - name: Install Oh My Zsh
-#       ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -- --unattended
-#       args:
-#         creates: ~/.oh-my-zsh
+- name: Setup Zsh, Oh My Zsh & Starship
+  hosts: localhost
+  vars:
+    plugins:
+      - name: zsh-syntax-highlighting
+        url: https://github.com/zsh-users/zsh-syntax-highlighting
+      - name: zsh-autosuggestions
+        url: https://github.com/zsh-users/zsh-autosuggestions
+      - name: zsh-fzf-history-search
+        url: https://github.com/joshskidmore/zsh-fzf-history-search
+      - name: zsh-completions
+        url: https://github.com/zsh-users/zsh-completions
+  tasks:
+    - name: Install zsh, zoxide and fzf
+      become: true
+      ansible.builtin.apt:
+        name:
+          - zsh
+          - zoxide
+          - fzf
+        state: latest
 
-#     - name: Set default shell to Zsh for {{ ansible_env.USER }}
-#       become: true
-#       ansible.builtin.shell: usermod --shell $(which zsh) {{ ansible_env.USER }}
-#       register: usermod_result
-#       changed_when: '"no changes" not in usermod_result.stdout'
+    - name: Install Oh My Zsh
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -- --unattended
+      args:
+        creates: ~/.oh-my-zsh
 
-#     - name: Install plugins
-#       ansible.builtin.git:
-#         repo: "{{ item.url }}"
-#         dest: ~/.oh-my-zsh/custom/plugins/{{ item.name }}
-#         depth: 1
-#       loop: "{{ plugins }}"
+    - name: Set default shell to Zsh for {{ ansible_env.USER }}
+      become: true
+      ansible.builtin.shell: usermod --shell $(which zsh) {{ ansible_env.USER }}
+      register: usermod_result
+      changed_when: '"no changes" not in usermod_result.stdout'
 
-#     - name: Install Starship
-#       ansible.builtin.shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
+    - name: Install plugins
+      ansible.builtin.git:
+        repo: "{{ item.url }}"
+        dest: ~/.oh-my-zsh/custom/plugins/{{ item.name }}
+        depth: 1
+      loop: "{{ plugins }}"
 
-# - name: Setup Alacritty
-#   hosts: localhost
-#   tasks:
-#     - name: Add alacritty repository
-#       ansible.builtin.apt_repository:
-#         repo: 'ppa:aslatter/ppa'
-#         state: present
-#         update_cache: true
+    - name: Install Starship
+      ansible.builtin.shell: sh -c "$(curl -fsSL https://starship.rs/install.sh)" -- --force
 
-#     - name: Install Alacritty & tmux
-#       ansible.builtin.apt:
-#         name:
-#           - alacritty
-#           - tmux
-#         state: latest
+- name: Setup Alacritty
+  hosts: localhost
+  tasks:
+    - name: Add alacritty repository
+      ansible.builtin.apt_repository:
+        repo: 'ppa:aslatter/ppa'
+        state: present
+        update_cache: true
 
-#     - name: Clone Nerd Fonts
-#       become: true
-#       ansible.builtin.git:
-#         repo: 'https://github.com/ryanoasis/nerd-fonts.git'
-#         dest: /usr/local/src/nerd-fonts
-#         depth: 1
+    - name: Install Alacritty & tmux
+      ansible.builtin.apt:
+        name:
+          - alacritty
+          - tmux
+        state: latest
 
-#     - name: Install JetBrains Mono
-#       ansible.builtin.command: /usr/local/src/nerd-fonts/install.sh JetBrainsMono
+    - name: Clone Nerd Fonts
+      become: true
+      ansible.builtin.git:
+        repo: 'https://github.com/ryanoasis/nerd-fonts.git'
+        dest: /usr/local/src/nerd-fonts
+        depth: 1
+
+    - name: Install JetBrains Mono
+      ansible.builtin.command: /usr/local/src/nerd-fonts/install.sh JetBrainsMono
 
 - name: Install packages from binary
   hosts: localhost
   become: true
   tasks:
-    # - name: Install kubectl
-    #   ansible.builtin.shell: |
-    #     curl -L --output /tmp/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    #     sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+    - name: Install kubectl
+      ansible.builtin.shell: |
+        curl -L --output /tmp/kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 
-    # - name: Install Zsh completions
-    #   shell: |
-    #     zsh_completions_path=/home/{{ ansible_env.USER }}/.oh-my-zsh/completions
-    #     mkdir --parents $zsh_completions_path
-    #     kubectl completion zsh > ${zsh_completions_path}/_kubectl
+    - name: Install Zsh completions
+      shell: |
+        zsh_completions_path=/home/{{ ansible_env.USER }}/.oh-my-zsh/completions
+        mkdir --parents $zsh_completions_path
+        kubectl completion zsh > ${zsh_completions_path}/_kubectl
 
     - name: Install terraform
       vars:
