@@ -12,20 +12,19 @@ from pydantic import validator
 
 CONFIG_PATH = 'mappings.yml'
 USER_OS = platform.system()
-
 yaml = ruamel.yaml.YAML(typ='safe')
 
 
-class OS(str,  Enum):
+class OperatingSystem(str,  Enum):
     linux = 'Linux'
+    darwin = 'Darwin'
     windows = 'Windows'
-    independent = 'Independent'
 
 
 class Link(BaseModel):
     from_field: Path = Field(..., alias='from')
     to: Path
-    os = OS.independent
+    operating_systems: list[OperatingSystem] = Field(None)
 
     @validator('from_field')
     def expand_link(cls, v: Path) -> Path:
@@ -52,8 +51,8 @@ class Link(BaseModel):
         self.from_field.unlink(missing_ok=True)
 
     def is_for_user_os(self) -> bool:
-        os = self.os
-        return os == OS.independent or os == USER_OS
+        operating_systems = self.operating_systems
+        return operating_systems == None or USER_OS in operating_systems
 
     def is_exists(self) -> bool:
         return self.from_field.exists() or self.from_field.is_symlink()

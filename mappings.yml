@@ -12,28 +12,47 @@ links:
 
   - from: ~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1
     to: dotfiles/Microsoft.PowerShell_profile.ps1
-    os: Windows
+    operating_systems:
+      - Windows
 
   - from: ~/.zshrc
     to: dotfiles/.zshrc
-    os: Linux
+    operating_systems:
+      - Darwin
+      - Linux
 
   - from: ~/.tmux.conf
     to: dotfiles/.tmux.conf
-    os: Linux
+    operating_systems:
+      - Linux
+      - Darwin
 
   - from: ~/.config/sway/
     to: dotfiles/sway/
-    os: Linux
+    operating_systems:
+      - Linux
 
   - from: ~/.config/waybar/
     to: dotfiles/waybar/
-    os: Linux
+    operating_systems:
+      - Linux
 
   - from: ~/.config/hypr/
     to: dotfiles/hypr/
-    os: Linux
+    operating_systems:
+      - Linux
 
   - from: ~/.config/qtile/
     to: dotfiles/qtile/
-    os: Linux
+    operating_systems:
+      - Linux
+
+  - from: ~/.skhdrc
+    to: dotfiles/.skhdrc
+    operating_systems:
+      - Darwin
+
+  - from: ~/.yabairc
+    to: dotfiles/.yabairc
+    operating_systems:
+      - Darwin

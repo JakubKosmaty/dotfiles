@@ -1,5 +1,7 @@
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 
 # Update reminder settings
 zstyle ':omz:update' mode reminder
@@ -69,6 +71,17 @@ if [ -e /home/jakub/.nix-profile/etc/profile.d/nix.sh ]; then . /home/jakub/.nix
 # Disable auto cd
 unsetopt autocd
 
+readonly AWS_COMPLETER_BIN_PATH=$(which aws_completer)
 
 complete -o nospace -C /usr/local/bin/terraform terraform
-complete -C '/usr/local/bin/aws_completer' aws
+complete -C $AWS_COMPLETER_BIN_PATH aws
+
+source <(kubectl completion zsh)
+
+. "$HOME/.asdf/asdf.sh"
+
+export AWS_DEFAULT_REGION="eu-central-1"
+export HISTFILESIZE=10000000
+export HISTSIZE=10000000
+
+eval "$(logcli --completion-script-zsh)"
