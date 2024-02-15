@@ -32,6 +32,8 @@ alias c='clear'
 alias grep='grep --color=auto'
 alias g='git'
 alias k='kubectl'
+alias t='terraform'
+alias tg='terragrunt'
 
 alias clip='xclip -selection clipboard'
 alias clipi='xclip -selection clipboard -i'
@@ -81,7 +83,14 @@ source <(kubectl completion zsh)
 . "$HOME/.asdf/asdf.sh"
 
 export AWS_DEFAULT_REGION="eu-central-1"
-export HISTFILESIZE=10000000
-export HISTSIZE=10000000
+
+export HISTFILESIZE=999999999
+export HISTSIZE=999999999
+export HISTCONTROL=ignoredups
+export SAVEHIST=$HISTSIZE
 
 eval "$(logcli --completion-script-zsh)"
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools

@@ -1,8 +1,8 @@
 force_creation: True
 links:
 
-  - from: ~/.alacritty.yml
-    to: dotfiles/.alacritty.yml
+  - from: ~/.alacritty.toml
+    to: dotfiles/.alacritty.toml
 
   - from: ~/.gitconfig
     to: dotfiles/.gitconfig

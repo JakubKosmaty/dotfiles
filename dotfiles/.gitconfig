@@ -19,5 +19,6 @@
 
 [includeIf "gitdir:~/Documents/work/"]
     path = professional.gitconfig
+
 [pull]
 	ff = only

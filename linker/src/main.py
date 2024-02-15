@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import argparse
 import platform
 from enum import Enum
@@ -10,30 +8,30 @@ from pydantic import BaseModel
 from pydantic import Field
 from pydantic import validator
 
-CONFIG_PATH = 'mappings.yml'
+CONFIG_PATH = "linker.yaml"
 USER_OS = platform.system()
-yaml = ruamel.yaml.YAML(typ='safe')
+yaml = ruamel.yaml.YAML(typ="safe")
 
 
-class OperatingSystem(str,  Enum):
-    linux = 'Linux'
-    darwin = 'Darwin'
-    windows = 'Windows'
+class OperatingSystem(str, Enum):
+    linux = "Linux"
+    darwin = "Darwin"
+    windows = "Windows"
 
 
 class Link(BaseModel):
-    from_field: Path = Field(..., alias='from')
+    from_field: Path = Field(..., alias="from")
     to: Path
     operating_systems: list[OperatingSystem] = Field(None)
 
-    @validator('from_field')
+    @validator("from_field")
     def expand_link(cls, v: Path) -> Path:
         return v.expanduser()
 
-    @validator('to')
+    @validator("to")
     def check_if_exists_and_resolve_file(cls, v: Path) -> Path:
         if not v.exists():
-            raise ValueError(f'File does not exists: {v}')
+            raise ValueError(f"File does not exists: {v}")
         return v.resolve()
 
     def symlink(self) -> None:
@@ -43,22 +41,22 @@ class Link(BaseModel):
         try:
             self.from_field.symlink_to(self.to)
         except OSError as err:
-            print(f'Could not create symlink ({self}): {err}')
+            print(f"Could not create symlink ({self}): {err}")
 
-        print(f'Link successfully created: {self}')
+        print(f"Link successfully created: {self}")
 
     def unlink(self) -> None:
         self.from_field.unlink(missing_ok=True)
 
     def is_for_user_os(self) -> bool:
         operating_systems = self.operating_systems
-        return operating_systems == None or USER_OS in operating_systems
+        return not operating_systems or USER_OS in operating_systems
 
     def is_exists(self) -> bool:
         return self.from_field.exists() or self.from_field.is_symlink()
 
     def __str__(self) -> str:
-        return f'{self.from_field} -> {self.to}'
+        return f"{self.from_field} -> {self.to}"
 
 
 class Config(BaseModel):
@@ -70,7 +68,7 @@ def parse_config(config: str) -> Config:
     path = Path(config)
     contents = yaml.load(path)
     to_dict = dict(contents)
-    return Config.parse_obj(to_dict)
+    return Config.model_validate(to_dict)
 
 
 def create_symlinks(config: Config) -> None:
@@ -80,11 +78,11 @@ def create_symlinks(config: Config) -> None:
             continue
 
         if link.from_field.is_dir():
-            print(f'Directory {link.from_field} already exists')
+            print(f"Directory {link.from_field} already exists")
             continue
 
         if not force and link.is_exists():
-            print(f'Link or file already exists: {link.from_field}')
+            print(f"Link or file already exists: {link.from_field}")
             continue
 
         link.unlink()
@@ -94,9 +92,9 @@ def create_symlinks(config: Config) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--config',
+        "--config",
         default=CONFIG_PATH,
-        help='Path to config file',
+        help="Path to config file",
     )
     return parser.parse_args()
 
@@ -109,5 +107,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())

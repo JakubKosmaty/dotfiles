@@ -1,0 +1,9 @@
+{
+  "packages": [
+    "python312@latest",
+    "poetry@latest"
+  ],
+  "shell": {
+    "init_hook": "poetry shell"
+  }
+}
